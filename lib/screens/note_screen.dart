@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebaseapp/modals/noteslist.dart';
 import 'package:firebaseapp/screens/main_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +18,7 @@ class NotesScreen extends StatefulWidget {
 class _NotesScreenState extends State<NotesScreen> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+  int i = 1;
 
   @override
   void initState() {
@@ -33,20 +37,31 @@ class _NotesScreenState extends State<NotesScreen> {
   //     );
   //   });
   // }
-  CollectionReference ref = FirebaseFirestore.instance.collection('');
+  CollectionReference ref = FirebaseFirestore.instance.collection('users');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.brown,
-        onPressed: () {
+        onPressed: () async {
           myNotes.notes.add(
             Note(
               title: _titleController.text,
               description: _descriptionController.text,
             ),
           );
+          try {
+            await ref
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection('note1')
+                .add({
+              'title': _titleController.text,
+              'description': _descriptionController.text,
+            }).then((value) => Navigator.of(context).pop());
+          } on FirebaseFirestore catch (e) {
+            log(e.toString());
+          }
         },
         child: const Icon(Icons.save),
       ),

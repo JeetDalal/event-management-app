@@ -146,9 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       'description': 'description',
                     },
                   ],
-                });
-
-                Navigator.of(context).pop();
+                }).then((value) => Navigator.of(context).pop());
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
                   setState(() {
