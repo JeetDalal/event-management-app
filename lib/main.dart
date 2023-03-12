@@ -1,12 +1,16 @@
-import 'package:firebaseapp/screens/main_screen.dart';
-import 'package:firebaseapp/screens/note_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebaseapp/screens/login.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
+import 'provider/event_provider.dart';
+import 'screens/home.dart';
 
-import 'screens/home_page.dart';
-import 'screens/register.dart';
-
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -15,18 +19,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (context) => EventProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+          textTheme: TextTheme(
+            bodySmall: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        home: const LoginPage(),
+        routes: {
+          '/home-page': (context) => const HomePage(),
+        },
       ),
-      home: const HomePage(),
-      routes: {
-        '/register-page': (context) => const RegisterPage(),
-        '/main-page': (context) => MainPage(),
-        '/notes-page': (context) => const NotesScreen(),
-      },
     );
   }
 }
